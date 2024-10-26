@@ -1,0 +1,95 @@
+{
+  "name": "quiz_response",
+  "strict": false,
+  "schema": {
+    "type": "object",
+    "required": [
+      "title",
+      "description",
+      "totalScore",
+      "duration",
+      "questions",
+      "createdBy"
+    ],
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "duration": {
+        "type": "integer"
+      },
+      "createdBy": {
+        "type": "string"
+      },
+      "totalScore": {
+        "type": "integer"
+      },
+      "description": {
+        "type": "string"
+      },
+      "questions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "questionType",
+            "statement",
+            "hint",
+            "explanation",
+            "correctAnswer"
+          ],
+          "properties": {
+            "questionType": {
+              "type": "string",
+              "enum": [
+                "MULTIPLE_CHOICE",
+                "SHORT_ANSWER",
+                "FILL_THE_BLANK",
+                "NUMERIC_ANSWER",
+                "TRUE_OR_FALSE"
+              ]
+            },
+            "statement": {
+              "type": "string"
+            },
+            "hint": {
+              "type": "string"
+            },
+            "correctAnswer": {
+              "type": [
+                "string",
+                "integer",
+                "array",
+                "boolean"
+              ],
+              "description": "String for SHORT_ANSWER, NUMERIC_ANSWER, Integer for MULTIPLE_CHOICE, Array for FILL_THE_BLANK, Boolean for TRUE_OR_FALSE",
+              "example": [
+                "The answer to this question is Pico da Bandeira.",
+                "3.143454",
+                1,
+                [
+                  "Gravity",
+                  "Stars",
+                  "Galaxy"
+                ],
+                true
+              ],
+              "items": {
+                "type": "string"
+              }
+            },
+            "options": {
+              "type": "array",
+              "description": "Only for MULTIPLE_CHOICE",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}
