@@ -20,8 +20,8 @@ This project is a RESTful API built with FastAPI that retrieves video transcript
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/kenzokomati/studai-quiz.git
-cd studai-quiz
+git clone https://github.com/kenzokomati/studai-assistant.git
+cd studai-assistant
 ```
 
 2. **Create a virtual environment and activate it**
