@@ -1,6 +1,6 @@
 # YouTube Transcript API with FastAPI
 
-This project is a RESTful API built with FastAPI that retrieves video transcripts from YouTube. It utilizes the `youtube_transcript_api` library to fetch transcripts in specified languages, with optional timestamp inclusion.
+This project is a RESTful API built with FastAPI that retrieves video transcripts from YouTube. It utilizes the `YouTubeTranscriptApi` library to fetch transcripts in specified languages, with optional timestamp inclusion.
 
 ## Features
 
@@ -11,15 +11,17 @@ This project is a RESTful API built with FastAPI that retrieves video transcript
 
 - Python 3.8+
 - FastAPI
-- youtube_transcript_api
+- YouTubeTranscriptApi
+- OpenAI
+- PyDantic
 
 ## Setup and Installation
 
 1. **Clone the repository**
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/kenzokomati/studai-quiz.git
+cd studai-quiz
 ```
 
 2. **Create a virtual environment and activate it**
@@ -43,30 +45,46 @@ Start the FastAPI application using uvicorn:
 uvicorn main:app --reload
 ```
 
-This will run the server at ```http://127.0.0.1:8000```.
+This will run the server at `http://127.0.0.1:8000`.
 
 ## Usage
-Send a ```GET``` request to the root endpoint (```/```) with the following parameters:
 
-```videoId```: (string, required) The YouTube video ID from which the transcript is to be retrieved.
-```timestampEnabled```: (boolean, optional, default is ```False```) If set to ```True```, timestamps are included in the transcript. If set to ```False```, timestamps are excluded, and only the text is returned.
+Send a `GET` request to the root endpoint (`/`) with the following parameters:
+
+`videoId`: (string, required) The YouTube video ID from which the transcript is to be retrieved.
+`timestampEnabled`: (boolean, optional, default is `False`) If set to `True`, timestamps are included in the transcript. If set to `False`, timestamps are excluded, and only the text is returned.
 
 ### Example Request
 
-```http
-  GET http://127.0.0.1:8000/?videoId=<video-id>&timestampEnabled=false
+```bash
+GET http://127.0.0.1:8000/api/quiz?videoId=<video-id>&questions=1
 ```
 
 ### Example Response
+
 ```json
 {
-  "transcript": "This is a sample transcript text."
+  "title": "Sample Quiz",
+  "description": "A quiz based on a video transcript",
+  "questions": [
+    {
+      "questionType": "MULTIPLE_CHOICE",
+      "statement": "What is the capital of France?",
+      "hint": "It's also known as the city of light",
+      "explanation": "Paris is the capital and largest city of France.",
+      "correctAnswer": 1,
+      "options": ["Berlin", "Paris", "Rome", "Madrid"]
+    }
+  ]
 }
 ```
 
 ## Dependencies
+
 - **FastAPI**: For building and running the API.
-- **youtube_transcript_api**: For accessing YouTube video transcripts.
+- **YouTubeTranscriptApi**: For accessing YouTube video transcripts.
+- **OpenAI**: For generate quizzes and check answers.
 
 ## License
-This project is licensed under the MIT License.
+
+This project is licensed under the MIT [License](LICENSE.txt).
