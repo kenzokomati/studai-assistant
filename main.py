@@ -11,8 +11,8 @@ import QuizResponseConfig
 app = FastAPI()
 
 client = OpenAI(
-    organization=os.environ.get("STUDAI_ORGANIZATION_ID"),
-    project=os.environ.get("STUDAI_PROJECT_ID"),
+    organization=os.environ.get("OPENAI_ORGANIZATION_ID"),
+    project=os.environ.get("OPENAI_PROJECT_ID"),
 )
 
 
@@ -63,7 +63,7 @@ async def generateQuiz(videoId: str, questions: int = 10):
     return response.choices[0].message.parsed
 
 
-@app.get("/transcript")
+@app.get("/api/transcript")
 async def getVideoTranscript(videoId: str, timestampEnabled: bool = False):
     try:
         return loadVideoTranscript(videoId, timestampEnabled)
