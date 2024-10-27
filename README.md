@@ -24,17 +24,18 @@ git clone https://github.com/kenzokomati/studai-assistant.git
 cd studai-assistant
 ```
 
-2. **Create a virtual environment and activate it**
+2. **Install requirements**
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+pip install -r requirements.txt
 ```
 
-3. **Install dependencies**
+3. **Set enviroment variables**
 
-```bash
-pip install fastapi youtube_transcript_api uvicorn
+```properties
+OPENAI_ORGANIZATION_ID=<your_openai_organization_id>
+OPENAI_PROJECT_ID=<your_openai_project_id>
+OPENAI_API_KEY=<your_openai_api_key>
 ```
 
 4. **Run the application**
