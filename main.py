@@ -15,19 +15,20 @@ client = OpenAI(
     project=os.environ.get("OPENAI_PROJECT_ID"),
 )
 
-
+#   enum = "SHORT_ANSWER", "FILL_THE_BLANK",
+#   descrition = String for SHORT_ANSWER, Array for FILL_THE_BLANK,
 class Question(BaseModel):
     questionType: str = Field(
         ...,
         description="Type of question",
-        enum=["MULTIPLE_CHOICE", "SHORT_ANSWER", "FILL_THE_BLANK", "TRUE_OR_FALSE"],
+        enum=["MULTIPLE_CHOICE", "TRUE_OR_FALSE"],
     )
     statement: str
     hint: Optional[str] = None
     explanation: Optional[str] = None
     correctAnswer: Union[str, int, List[str], bool] = Field(
         ...,
-        description="String for SHORT_ANSWER, Integer for MULTIPLE_CHOICE, Array for FILL_THE_BLANK, Boolean for TRUE_OR_FALSE",
+        description=" Integer for MULTIPLE_CHOICE, Boolean for TRUE_OR_FALSE",
     )
     options: Optional[List[str]] = Field(
         None, description="Only used for MULTIPLE_CHOICE questions"
@@ -41,6 +42,7 @@ class QuizResponse(BaseModel):
     QuizResponseConfig
 
 
+# Content = In the FILL_THE_BLANK questions, use '___BLANK___' as the placeholder.
 @app.post("/api/quiz")
 async def generateQuiz(videoId: str, questions: int = 10):
     transcript = loadVideoTranscript(videoId)["transcript"]
@@ -50,7 +52,7 @@ async def generateQuiz(videoId: str, questions: int = 10):
         messages=[
             {
                 "role": "system",
-                "content": f"You are a teacher and you need to create a quiz for your students based on the video transcript. The quiz should have {questions} questions. In the FILL_THE_BLANK questions, use '___BLANK___' as the placeholder.",
+                "content": f"You are a teacher and you need to create a quiz for your students based on the video transcript. The quiz should have {questions} questions.",
             },
             {
                 "role": "user",

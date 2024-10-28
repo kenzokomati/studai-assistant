@@ -1,17 +1,5 @@
-class Config:
-    schema_extra = {
-        "example": {
-            "title": "Sample Quiz",
-            "description": "A quiz based on a video transcript",
-            "questions": [
-                {
-                    "questionType": "MULTIPLE_CHOICE",
-                    "statement": "What is the capital of France?",
-                    "hint": "It's also known as the city of light",
-                    "explanation": "Paris is the capital and largest city of France.",
-                    "correctAnswer": 1,
-                    "options": ["Berlin", "Paris", "Rome", "Madrid"],
-                },
+'''
+full project includes :
                 {
                     "questionType": "SHORT_ANSWER",
                     "statement": "Name the process by which plants make their food.",
@@ -25,6 +13,22 @@ class Config:
                     "hint": "It is a round number",
                     "explanation": "Water boils at 100 degrees Celsius.",
                     "correctAnswer": ["100"],
+                },
+'''
+
+class Config:
+    schema_extra = {
+        "example": {
+            "title": "Sample Quiz",
+            "description": "A quiz based on a video transcript",
+            "questions": [
+                {
+                    "questionType": "MULTIPLE_CHOICE",
+                    "statement": "What is the capital of France?",
+                    "hint": "It's also known as the city of light",
+                    "explanation": "Paris is the capital and largest city of France.",
+                    "correctAnswer": 1,
+                    "options": ["Berlin", "Paris", "Rome", "Madrid"],
                 },
                 {
                     "questionType": "TRUE_OR_FALSE",
