@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from services.transcript_service import get_transcript
+from app.services.transcript_service import get_transcript
 
 router = APIRouter()
 
@@ -9,3 +9,4 @@ async def get_transcript_endpoint(videoId: str, timestampEnabled: bool = False):
         return get_transcript(videoId, timestampEnabled)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api import quiz, transcript
+from app.api import quiz, transcript
 
 app = FastAPI()
 

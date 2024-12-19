@@ -1,6 +1,6 @@
-from services.transcript_service import get_transcript
-from core.config import client
-from schemas.quiz_response import QuizResponse
+from app.services.transcript_service import get_transcript
+from app.core.config import client
+from app.schemas.quiz_response import QuizResponse
 
 def generate_quiz(videoId: str, questions: int, language: str) -> QuizResponse:
     transcript = get_transcript(videoId)["transcript"]
