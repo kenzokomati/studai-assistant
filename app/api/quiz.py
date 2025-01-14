@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException
-from app.schemas.quiz_response import QuizResponse
+from app.schemas.quiz_model import Quiz
 from app.services.quiz_service import generate_quiz
 
 router = APIRouter()
 
-
-@router.post("/", response_model=QuizResponse)
+@router.post("/", response_model=Quiz)
 async def generate_quiz_endpoint(
     videoId: str, questionsNumber: int = 10, language: str = "pt-br"
 ):
