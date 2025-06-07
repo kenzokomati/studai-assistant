@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from app.api import quiz, transcript
+from app.middleware.logging_middleware import LoggingMiddleware
 
 app = FastAPI()
+
+# Custom logging middleware
+app.add_middleware(LoggingMiddleware)
 
 # Include API routers
 app.include_router(quiz.router, prefix="/api/quiz", tags=["Quiz"])
