@@ -43,10 +43,11 @@ OPENAI_API_KEY=<your_openai_api_key>
 Start the FastAPI application using uvicorn:
 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload --port 8000
 ```
 
 This will run the server at `http://127.0.0.1:8000`.
+The OpenAPI documentation is available at `http://127.0.0.1:8000/docs`.
 
 ## Usage
 

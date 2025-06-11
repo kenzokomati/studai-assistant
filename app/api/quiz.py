@@ -1,15 +1,14 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas.quiz_model import Quiz
 from app.services.quiz_service import generate_quiz
+from app.schemas.quiz_request import QuizRequest
 
 router = APIRouter()
 
 @router.post("/", response_model=Quiz)
-async def generate_quiz_endpoint(
-    videoId: str, questionsNumber: int = 10, language: str = "pt-br"
-):
+async def generate_quiz_endpoint(request: QuizRequest):
     try:
-        return generate_quiz(videoId, questionsNumber, language)
+        return generate_quiz(request)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
  
