@@ -1,73 +1,68 @@
-from app.services.transcript_service import get_transcript
-from app.core.config import client
-from app.schemas.quiz_response import QuizResponse
+from app.schemas.quiz import Quiz
+from app.schemas.message import Message
 from app.schemas.quiz_request import QuizRequest
 from app.schemas.quiz_request import SourceType
 
-instructions_to_format_response = ("""
-    IMPORTANT: Respect the specified language strictly. Do not mix languages. Translate any internal labels like "True" / "False" or "Correct" / "Incorrect" into the target language.
-    - Each question must include the following fields:\n
-      - 'questionType': 'MULTIPLE_CHOICE' or 'TRUE_OR_FALSE'.\n
-      - 'statement': The question itself.\n
-      - 'hint': A short hint to help the user.\n
-      - 'explanation': A brief explanation for the correct answer.\n
-      - 'correctAnswer': A string with correct option.\n
-      - 'options': A list of 4 options for multiple choice questions or true/false (respect the language preference).\n\n
-    Also include:\n
-    - A 'title' summarizing the theme of the quiz.\n
-    - A 'description' of what the quiz covers.\n\n
-    Output must strictly follow the QuizResponse format.
-""")
+from app.utils.prompts import read_prompts_file
+from app.services.transcript_service import get_transcript
+from app.clients.openai_client import requestChatCompletion
 
-def generate_quiz(request: QuizRequest) -> QuizResponse:
-    if request.sourceType == SourceType.YOUTUBE_VIDEO: 
-        return generate_video_quiz(request)
-    elif request.sourceType == SourceType.PROMPT_BASED:
-        return generate_prompt_quiz(request)
-    else:
-        raise ValueError(f"Invalid typeQuiz. Must be '{SourceType.YOUTUBE_VIDEO}' or '{SourceType.PROMPT_BASED}'.")
+QUIZ_GENERATION_INSTRUCTIONS = read_prompts_file("quiz_generation_instructions")
+
+def generate_quiz(request: QuizRequest) -> Quiz:
+
+    instructions_message = Message(
+        role="system",
+        content=QUIZ_GENERATION_INSTRUCTIONS
+    )
+
+    system_message = assemble_system_message(request)
+    user_message = assemble_user_message(request)
+
+    return requestChatCompletion(
+        messages=[
+            instructions_message,
+            system_message,
+            user_message
+        ],
+        response_format=Quiz
+    )
+
+
     
-def generate_prompt_quiz(request: QuizRequest) -> QuizResponse:
-    response = client.beta.chat.completions.parse(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                            f"""You are a quiz generator. Create a quiz with {request.questionsQuantity} questions and answers in {request.languageCode} language.
-                            All parts of the quiz — including title, description, question statements, options, hints, explanations, and answers — must be written entirely in the language identified by the language code: "{request.languageCode}".
-                            based on the content provided by the user. The quiz must follow this structure:\n\n 
-                            {instructions_to_format_response}"""
-                        )
-            },
-            {
-                "role": "user",
-                "content": request.sourceContent,
-            },
-        ],
-        response_format=QuizResponse,
+def assemble_system_message(request: QuizRequest) -> Message:
+    content = None
+    if request.sourceType == SourceType.PROMPT_BASED:
+        content = f"""You are a quiz generator. Create a quiz with {request.questionsQuantity} questions and answers in {request.languageCode} language. All parts of the quiz — including title, description, question statements, options, hints, explanations, and answers — must be written entirely in the language identified by the language code: "{request.languageCode}"."""
+        
+    elif request.sourceType == SourceType.YOUTUBE_VIDEO:
+        content = f"""You are a quiz generator. Based on the following video transcript, generate a quiz with {request.questionsQuantity} questions in {request.languageCode}. The transcript may include informal speech, digressions, and filler words — ignore those and focus on extracting the key ideas."""
+        
+    else:
+        raise ValueError(f"Invalid sourceType: {request.sourceType}. Must be '{SourceType.PROMPT_BASED}' or '{SourceType.YOUTUBE_VIDEO}'.")
+    
+    return Message(
+        role="system",
+        content=content
     )
-    return response.choices[0].message.parsed
 
-def generate_video_quiz(request: QuizRequest) -> QuizResponse:
-    transcript = get_transcript(request.sourceContent)["transcript"]
+def assemble_user_message (request: QuizRequest) -> Message:
+    content = None
+    if request.sourceType == SourceType.PROMPT_BASED:
+        content = f'Generate a quiz with {request.questionsQuantity} questions in {request.languageCode} language. The quiz should cover the following topic: "{request.sourceContent}".'
+    
+    elif request.sourceType == SourceType.YOUTUBE_VIDEO:
+        transcript = get_transcript(request.sourceContent)
 
-    response = client.beta.chat.completions.parse(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                            f"""You are a quiz generator. Based on the following video transcript, generate a quiz with {request.questionsQuantity} questions in {request.languageCode}.\n\n
-                            The transcript may include informal speech, digressions, and filler words — ignore those and focus on extracting the key ideas.\n\n
-                            {instructions_to_format_response}"""
-                        )
-            },
-            {
-                "role": "user",
-                "content": transcript,
-            },
-        ],
-        response_format=QuizResponse,
+        if not transcript or not transcript.get("transcript"):
+            raise ValueError("Transcript not found or unavailable.")
+        
+        content = f'Generate a quiz with {request.questionsQuantity} questions in {request.languageCode} language based on the following transcript: "{transcript}".'
+    
+    else:
+        raise ValueError(f"Invalid sourceType: {request.sourceType}. Must be '{SourceType.PROMPT_BASED}' or '{SourceType.YOUTUBE_VIDEO}'.")
+
+    return Message(
+        role="user",
+        content=content
     )
-    return response.choices[0].message.parsed
