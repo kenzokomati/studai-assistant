@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from app.api import quiz, transcript
-from app.middleware.logging_middleware import LoggingMiddleware
+from app.api.v1 import transcript
+from app.api.v1 import quiz
+from app.middleware.logging import LoggingMiddleware
 
 app = FastAPI()
 
@@ -8,8 +9,8 @@ app = FastAPI()
 app.add_middleware(LoggingMiddleware)
 
 # Include API routers
-app.include_router(quiz.router, prefix="/api/quiz", tags=["Quiz"])
-app.include_router(transcript.router, prefix="/api/transcript", tags=["Transcript"])
+app.include_router(quiz.router, prefix="/api/v1/quizzes", tags=["Quizzes"])
+app.include_router(transcript.router, prefix="/api/v1/transcripts", tags=["Transcripts"])
 
 @app.get("/")  # Health check endpoint
 def read_root():
