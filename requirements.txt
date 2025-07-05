@@ -3,3 +3,4 @@ openai==1.61.1
 uvicorn==0.32.0
 youtube-transcript-api==1.1.1
 python-dotenv==1.1.1
+gunicorn==23.0.0
