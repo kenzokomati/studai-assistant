@@ -4,6 +4,7 @@ from enum import Enum
 class SourceType(Enum):
     PROMPT_BASED = "PROMPT_BASED"
     YOUTUBE_VIDEO = "YOUTUBE_VIDEO"
+    PDF_CONTENT = "PDF_CONTENT"
 
 class LanguageCode(Enum):
     EN = "EN"
