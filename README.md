@@ -1,92 +1,107 @@
-# YouTube Transcript API with FastAPI
+# StudAI Assistant - Python Backend
 
-This project is a RESTful API built with FastAPI that retrieves video transcripts from YouTube. It utilizes the `YouTubeTranscriptApi` library to fetch transcripts in specified languages, with optional timestamp inclusion.
+![Python](https://img.shields.io/badge/python-3.9%20%7C%203.12-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115.3-green)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Features
+This repository contains the **Python FastAPI microservice** for the Studai project, an AI-driven quiz creation platform. This service handles two core functionalities:
+1. **YouTube Transcript Retrieval**: Fetches transcripts for YouTube videos
+2. **AI-Powered Quiz Generation**: Creates quizzes from various sources using OpenAI's GPT models
 
-- Fetch YouTube video transcripts in multiple languages.
-- Optionally include or exclude timestamps from the transcript text.
+## ✨ Key Features
+- **YouTube Transcript API**: Retrieve video transcripts with optional timestamps
+- **Quiz Generation**: Create quizzes from text prompts, YouTube videos, or PDF content
+- **Multi-language Support**: Generate quizzes in English (EN) or Portuguese (PT)
+- **PDF Processing**: Extract content from uploaded PDF files
+- **Structured Logging**: Request tracing with unique IDs
+- **Authentication**: Secure endpoints with bearer token authentication
 
-## Requirements
+## 📂 Project Structure
+```text
+├── .dockerignore
+├── .github
+│ └── workflows
+│ └── python-api-ci-cd.yml # CI/CD pipeline
+├── .gitignore
+├── Dockerfile # Container configuration
+├── Dockerrun.aws.json # Elastic Beanstalk config
+├── LICENSE
+├── app
+│ ├── api
+│ │ └── v1
+│ │ ├── quiz.py # Quiz endpoints
+│ │ └── transcript.py # Transcript endpoints
+│ ├── clients
+│ │ └── openai_client.py # OpenAI integration
+│ ├── context.py # Request context
+│ ├── logger.py # Logging configuration
+│ ├── main.py # App entrypoint
+│ ├── middleware
+│ │ └── logging.py # Request logging
+│ ├── prompts
+│ │ └── quiz_generation_instructions.md # AI instructions
+│ ├── schemas # Pydantic models
+│ │ ├── message.py
+│ │ ├── question.py
+│ │ ├── quiz.py
+│ │ └── quiz_request.py
+│ ├── services
+│ │ ├── file_service.py # PDF processing
+│ │ ├── quiz_service.py # Quiz generation
+│ │ └── transcript_service.py # YouTube transcripts
+│ └── utils
+│ └── prompts.py # Prompt utilities
+└── requirements.txt # Dependencies
+```
 
-- Python 3.8+
-- FastAPI
-- YouTubeTranscriptApi
-- OpenAI
-- PyDantic
 
-## Setup and Installation
+## 🚀 Technology Stack
+- **Python 3.12** (with support for 3.9+)
+- **FastAPI** - API framework
+- **OpenAI API** - Quiz generation
 
-1. **Clone the repository**
+## 🛠️ Getting Started
+### Prerequisites
+- Python 3.9+
+- OpenAI API key
+- Docker (optional)
 
+### Local Setup
+#### 1. Clone the repository:
 ```bash
 git clone https://github.com/kenzokomati/studai-assistant.git
 cd studai-assistant
 ```
 
-2. **Install requirements**
+#### 2. Create virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+```
 
+#### 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Set enviroment variables**
-
-```properties
-OPENAI_ORGANIZATION_ID=<your_openai_organization_id>
-OPENAI_PROJECT_ID=<your_openai_project_id>
-OPENAI_API_KEY=<your_openai_api_key>
-```
-
-4. **Run the application**
-
-Start the FastAPI application using uvicorn:
-
+#### 4. Run the application:
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-This will run the server at `http://127.0.0.1:8000`.
-The OpenAPI documentation is available at `http://127.0.0.1:8000/docs`.
-
-## Usage
-
-Send a `GET` request to the root endpoint (`/`) with the following parameters:
-
-`videoId`: (string, required) The YouTube video ID from which the transcript is to be retrieved.
-`timestampEnabled`: (boolean, optional, default is `False`) If set to `True`, timestamps are included in the transcript. If set to `False`, timestamps are excluded, and only the text is returned.
-
-### Example Request
-
-```bash
-GET http://127.0.0.1:8000/api/quiz?videoId=<video-id>&questions=1
+### Configuration
+Create a `.env` file:
+```properties
+OPENAI_ORGANIZATION_ID=<your_org_id>
+OPENAI_PROJECT_ID=<your_project_id>
+OPENAI_API_KEY=<your_api_key>
+SECURITY_KEY=dev_key
 ```
 
-### Example Response
+## 🌐 API Documentation
+Interactive API documentation is available at:
+`http://localhost:8000/docs`
 
-```json
-{
-  "title": "Sample Quiz",
-  "description": "A quiz based on a video transcript",
-  "questions": [
-    {
-      "questionType": "MULTIPLE_CHOICE",
-      "statement": "What is the capital of France?",
-      "hint": "It's also known as the city of light",
-      "explanation": "Paris is the capital and largest city of France.",
-      "correctAnswer": 1,
-      "options": ["Berlin", "Paris", "Rome", "Madrid"]
-    }
-  ]
-}
-```
+## 📜 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Dependencies
-
-- **FastAPI**: For building and running the API.
-- **YouTubeTranscriptApi**: For accessing YouTube video transcripts.
-- **OpenAI**: For generate quizzes and check answers.
-
-## License
-
-This project is licensed under the MIT [License](LICENSE.txt).
